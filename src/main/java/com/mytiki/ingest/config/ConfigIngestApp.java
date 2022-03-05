@@ -3,6 +3,7 @@ package com.mytiki.ingest.config;
 import com.mytiki.common.exception.ApiExceptionHandlerDefault;
 import com.mytiki.common.reply.ApiReplyHandlerDefault;
 import org.springframework.context.annotation.Import;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
@@ -11,6 +12,7 @@ import java.util.TimeZone;
         ApiExceptionHandlerDefault.class,
         ApiReplyHandlerDefault.class,
 })
+@EnableScheduling
 public class ConfigIngestApp {
     @PostConstruct
     void starter(){
