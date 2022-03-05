@@ -18,6 +18,6 @@ public class BreakerController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ApiReplyAO<BreakerAORsp> post(@RequestBody BreakerAOReq body){
-        return ApiReplyAOFactory.ok();
+        return ApiReplyAOFactory.ok(breakerService.write(body));
     }
 }
