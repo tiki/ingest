@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS breaker(
       edge_hash BYTEA NOT NULL UNIQUE,
       closed BOOLEAN NOT NULL DEFAULT FALSE,
       created_utc TIMESTAMP WITH TIME ZONE NOT NULL,
+      modified_utc TIMESTAMP WITH TIME ZONE NOT NULL,
       PRIMARY KEY(id)
 );
 
@@ -22,6 +23,6 @@ CREATE TABLE IF NOT EXISTS quarantine(
       breaker_id BIGSERIAL NOT NULL,
       fingerprint_hash BYTEA NOT NULL UNIQUE,
       created_utc TIMESTAMP WITH TIME ZONE NOT NULL,
-      PRIMARY KEY(id)
+      PRIMARY KEY(id),
       FOREIGN KEY(breaker_id) REFERENCES breaker(id)
 );

@@ -2,7 +2,9 @@ package com.mytiki.ingest.features.latest.breaker;
 
 import com.mytiki.common.ApiConstants;
 import com.mytiki.common.reply.ApiReplyAO;
+import com.mytiki.common.reply.ApiReplyAOBuilder;
 import com.mytiki.common.reply.ApiReplyAOFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +20,11 @@ public class BreakerController {
 
     @RequestMapping(method = RequestMethod.POST)
     public ApiReplyAO<BreakerAORsp> post(@RequestBody BreakerAOReq body){
-        return ApiReplyAOFactory.ok(breakerService.write(body));
+        BreakerAORsp rsp = breakerService.write(body);
+        ApiReplyAOBuilder<BreakerAORsp> builder = new ApiReplyAOBuilder<>();
+        if(rsp.getRetryIn() == null)
+            return builder.httpStatus(HttpStatus.CREATED).build();
+        else
+            return builder.httpStatus(HttpStatus.ACCEPTED).data(rsp).build();
     }
 }

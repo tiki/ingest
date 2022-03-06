@@ -59,7 +59,7 @@ public class ConfigSecurity extends WebSecurityConfigurerAdapter {
 
     private static final String CONTENT_SECURITY_POLICY = "default-src" + "' self'";
 
-    @Value("${com.mytiki.kgraph.jwt.ingest.public_key}")
+    @Value("${com.mytiki.ingest.jwt.bouncer.public_key}")
     private String jwtPublicKey;
 
     private final AccessDeniedHandler accessDeniedHandler;

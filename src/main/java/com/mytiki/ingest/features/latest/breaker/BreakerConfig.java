@@ -14,8 +14,10 @@ public class BreakerConfig {
     public static final String PACKAGE_PATH = Constants.PACKAGE_FEATURES_LATEST_DOT_PATH + ".breaker";
 
     @Bean
-    public BreakerService breakerService(@Autowired BreakerRepository breakerRepository){
-        return new BreakerService(breakerRepository);
+    public BreakerService breakerService(
+            @Autowired BreakerRepository breakerRepository,
+            @Autowired QuarantineService quarantineService){
+        return new BreakerService(breakerRepository, quarantineService);
     }
 
     @Bean
