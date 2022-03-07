@@ -1,5 +1,6 @@
 package com.mytiki.ingest.features.latest.breaker;
 
+import com.mytiki.ingest.features.latest.cache.CacheService;
 import com.mytiki.ingest.features.latest.quarantine.QuarantineRepository;
 import com.mytiki.ingest.features.latest.quarantine.QuarantineService;
 import com.mytiki.ingest.utilities.Constants;
@@ -16,8 +17,9 @@ public class BreakerConfig {
     @Bean
     public BreakerService breakerService(
             @Autowired BreakerRepository breakerRepository,
-            @Autowired QuarantineService quarantineService){
-        return new BreakerService(breakerRepository, quarantineService);
+            @Autowired QuarantineService quarantineService,
+            @Autowired CacheService cacheService){
+        return new BreakerService(breakerRepository, quarantineService, cacheService);
     }
 
     @Bean

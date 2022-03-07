@@ -6,6 +6,7 @@
 package com.mytiki.ingest.config;
 
 import com.mytiki.common.ApiConstants;
+import com.mytiki.ingest.features.latest.breaker.BreakerController;
 import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.proc.SingleKeyJWSKeySelector;
@@ -107,6 +108,7 @@ public class ConfigSecurity extends WebSecurityConfigurerAdapter {
                 )
                 .authorizeRequests(authorize -> authorize
                         .antMatchers(HttpMethod.GET, ApiConstants.HEALTH_ROUTE).permitAll()
+                        .antMatchers(HttpMethod.POST, BreakerController.PATH_CONTROLLER).permitAll()
                         .anyRequest()
                         .authenticated()
                 );

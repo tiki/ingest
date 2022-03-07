@@ -5,6 +5,9 @@ import com.mytiki.ingest.features.latest.breaker.BreakerAOReq;
 import com.mytiki.ingest.features.latest.breaker.BreakerAOReqVertex;
 import com.mytiki.ingest.features.latest.breaker.BreakerAORsp;
 import com.mytiki.ingest.features.latest.breaker.BreakerService;
+import com.mytiki.ingest.features.latest.cache.CacheDO;
+import com.mytiki.ingest.features.latest.cache.CacheRepository;
+import com.mytiki.ingest.features.latest.cache.CacheService;
 import com.mytiki.ingest.features.latest.quarantine.QuarantineService;
 import com.mytiki.ingest.main.IngestApp;
 import org.junit.jupiter.api.*;
@@ -13,8 +16,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.core.env.Environment;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.ZonedDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,16 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BreakerTests {
     @Autowired
-    private Environment environment;
-
-    @LocalServerPort
-    private int localServerPort;
-
-    @Autowired
     private BreakerService breakerService;
-
-    @Autowired
-    private QuarantineService quarantineService;
 
     private final String transaction = UUID.randomUUID().toString();
 

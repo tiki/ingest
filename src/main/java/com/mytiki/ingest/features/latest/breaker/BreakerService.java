@@ -1,11 +1,13 @@
 package com.mytiki.ingest.features.latest.breaker;
 
 import com.mytiki.common.exception.ApiExceptionFactory;
+import com.mytiki.ingest.features.latest.cache.CacheService;
 import com.mytiki.ingest.features.latest.quarantine.QuarantineDO;
 import com.mytiki.ingest.features.latest.quarantine.QuarantineService;
 import com.mytiki.ingest.utilities.Hash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 
 import javax.swing.text.html.Option;
@@ -27,12 +29,15 @@ public class BreakerService {
 
     private final BreakerRepository repository;
     private final QuarantineService quarantine;
+    private final CacheService cache;
 
     public BreakerService(
             BreakerRepository repository,
-            QuarantineService quarantine) {
+            QuarantineService quarantine,
+            CacheService cache) {
         this.repository = repository;
         this.quarantine = quarantine;
+        this.cache = cache;
     }
 
     @Transactional
@@ -44,13 +49,13 @@ public class BreakerService {
             if(breakerDOOptional.isPresent()){
                 BreakerDO breaker = breakerDOOptional.get();
                 if(breaker.getClosed()){
-                    writeThru(req);
+                    cache.add(req);
                     return new BreakerAORsp();
                 }else{
                     List<QuarantineDO> quarantineList = quarantine.getByBreakerId(breaker.getId());
                     if(quarantineList.size() >= EPSILON - 1) {
                         toggle(breaker);
-                        writeThru(req);
+                        cache.add(req);
                         return new BreakerAORsp();
                     }else
                         return addQuarantine(breaker.getId(), req.fingerprint);
@@ -60,6 +65,9 @@ public class BreakerService {
         } catch (NoSuchAlgorithmException e) {
             logger.error(e.getMessage(), e.getCause());
             throw ApiExceptionFactory.exception(HttpStatus.EXPECTATION_FAILED, "Hashing failed");
+        } catch (DataIntegrityViolationException e){
+            logger.error(e.getMessage(), e.getCause());
+            throw ApiExceptionFactory.exception(HttpStatus.BAD_REQUEST, "Failed. Check the request body");
         }
     }
 
@@ -102,9 +110,5 @@ public class BreakerService {
         breaker.setClosed(true);
         breaker.setModified(ZonedDateTime.now());
         repository.save(breaker);
-    }
-
-    private void writeThru(BreakerAOReq req){
-        //TODO implement
     }
 }
