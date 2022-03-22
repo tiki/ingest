@@ -10,7 +10,7 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
-# Package Files #
+# Package files #
 *.jar
 *.war
 *.nar
@@ -21,3 +21,23 @@
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
+
+# IntelliJ files
+.idea
+*.iml
+
+# Output files
+/target/
+
+# Property files
+application-*.properties
+!application-*.template.properties
+
+# Fuckin Macs
+.DS_Store
+
+# Gradle
+.gradle
+
+# Private Keys [temporary until setup remote secrets]
+*.key
