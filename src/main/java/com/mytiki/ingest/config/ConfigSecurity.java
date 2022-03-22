@@ -108,7 +108,6 @@ public class ConfigSecurity extends WebSecurityConfigurerAdapter {
                 )
                 .authorizeRequests(authorize -> authorize
                         .antMatchers(HttpMethod.GET, ApiConstants.HEALTH_ROUTE).permitAll()
-                        .antMatchers(HttpMethod.POST, BreakerController.PATH_CONTROLLER).permitAll()
                         .anyRequest()
                         .authenticated()
                 );

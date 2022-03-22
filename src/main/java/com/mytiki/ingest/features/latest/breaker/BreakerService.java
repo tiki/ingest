@@ -19,12 +19,11 @@ import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 public class BreakerService {
     private static final Logger logger = LoggerFactory.getLogger(MethodHandles.lookup().lookupClass());
-    private static final int EPSILON = 10;
+    private static final int EPSILON = 10; //TODO move to prop
     private static final long RETRY_IN = Duration.ofDays(1).getSeconds(); //TODO make dynamic
 
     private final BreakerRepository repository;
