@@ -6,12 +6,13 @@ data "digitalocean_ssh_key" "terraform" {
 }
 
 resource "digitalocean_droplet" "ingest-dp" {
-  count = 2
-  image    = "ubuntu-20-04-x64"
-  name     = "ingest-dp-${local.region}"
-  region   = local.region
-  size     = "s-1vcpu-1gb"
-  vpc_uuid = local.vpc_uuid
+  count      = 2
+  image      = "ubuntu-20-04-x64"
+  name       = "ingest-dp-${local.region}"
+  region     = local.region
+  size       = "s-1vcpu-1gb"
+  vpc_uuid   = local.vpc_uuid
+  monitoring = true
   ssh_keys = [
     data.digitalocean_ssh_key.terraform.id
   ]
@@ -50,8 +51,8 @@ resource "digitalocean_firewall" "ingest-fw" {
   ]
 
   inbound_rule {
-    protocol         = "tcp"
-    port_range       = local.port
+    protocol                  = "tcp"
+    port_range                = local.port
     source_load_balancer_uids = [digitalocean_loadbalancer.ingest-lb.id]
   }
 

@@ -2,8 +2,7 @@
 # MIT license. See LICENSE file in root directory.
 
 resource "digitalocean_database_cluster" "db-cluster-ingest" {
-  name                 = "db-cluster-ingest"
-  #name                 = "ingest-db-cluster-${local.region}"
+  name                 = "ingest-db-cluster-${local.region}"
   engine               = "pg"
   version              = "14"
   size                 = "db-s-1vcpu-1gb"
