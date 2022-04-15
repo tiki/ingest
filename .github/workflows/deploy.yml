@@ -49,7 +49,7 @@ jobs:
           sudo apt-get install --yes postgresql-client
 
       - name: Create Tables
-        run: psql -h postgres -d ingest -U postgres -f ingest/database/create_tables.sql
+        run: psql -h localhost -d ingest -U postgres -f ingest/database/create_tables.sql
         env:
           PGPASSWORD: mY6vvC82bC_vdQthMzi7DnghZopRAjmD
 
