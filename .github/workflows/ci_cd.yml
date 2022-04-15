@@ -1,4 +1,4 @@
-name: Deploy
+name: ci-cd
 
 on:
   push:
@@ -7,8 +7,9 @@ on:
 
 jobs:
 
-  Image:
+  build_test_push:
     runs-on: ubuntu-latest
+    environment: Production
     services:
       postgres:
         image: postgres:13.2
@@ -95,3 +96,32 @@ jobs:
           build-args: |
             JAR_FILE=target/*.jar
             DOPPLER_ST=${{ secrets.DOPPLER_ST }}
+
+  deploy_to_infra:
+    runs-on: ubuntu-latest
+    environment: Production
+    needs: [build]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.1.1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+        with:
+          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt
+        working-directory: infra
+
+      - name: Terraform Init
+        id: init
+        run: terraform init
+        working-directory: infra
+
+      - name: Terraform Apply
+        id: apply
+        run: terraform apply -auto-approve
+        working-directory: infra
