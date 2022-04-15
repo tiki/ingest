@@ -3,8 +3,6 @@ VOLUME /tmp
 VOLUME /target
 
 ARG JAR_FILE
-ARG DOPPLER_ST
-
 COPY ${JAR_FILE} app.jar
 
 RUN apt-get update && apt-get install -y apt-transport-https ca-certificates curl gnupg && \
@@ -14,10 +12,5 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates cur
     apt-get -y install doppler
 
 EXPOSE 8464
-ENTRYPOINT [
-    "doppler",
-    "run",
-    "-c", "prd",
-    "-e", "DOPPLER_TOKEN=\"$DOPPLER_ST\"",
-    "--",
-    "java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+ENTRYPOINT ["doppler", "run", "-c", "prd", "--"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]

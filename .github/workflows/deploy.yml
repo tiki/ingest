@@ -64,7 +64,7 @@ jobs:
       - name: Maven Package Ingest
         run: |
           cd ingest
-          doppler run -c prd -- mvn clean package
+          doppler run -c tst -- mvn clean package
         env:
           DOPPLER_TOKEN: ${{ secrets.DOPPLER_ST }}
 

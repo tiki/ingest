@@ -11,6 +11,8 @@ variable "sem_ver" {
   default = "0.0.1"
 }
 
+variable "doppler_st" {}
+
 resource "digitalocean_project" "ingest" {
   name        = "ingest"
   description = "https://github.com/tiki/ingest"

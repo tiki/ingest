@@ -37,7 +37,7 @@ resource "digitalocean_droplet" "ingest-dp" {
       "sudo snap connect doctl:dot-docker",
       "doctl registry login --expiry-seconds 600 --access-token ${var.do_pat}",
       "docker pull registry.digitalocean.com/tiki/ingest:${var.sem_ver}",
-      "docker run -d -p ${local.port}:${local.port} registry.digitalocean.com/tiki/ingest:${var.sem_ver}"
+      "docker run -d -p ${local.port}:${local.port} -e DOPPLER_TOKEN=\"${var.doppler_st}\" registry.digitalocean.com/tiki/ingest:${var.sem_ver}"
     ]
   }
 }
