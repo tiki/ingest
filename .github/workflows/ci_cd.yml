@@ -105,6 +105,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.1.1
 
+      - name: Get Version From Tag
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+
+      - name: Setup Terraform Variables
+        working-directory: ./infra
+        run: |-
+          cat > pipeline.auto.tfvars <<EOF
+          sem_ver = "${{ steps.vars.outputs.tag }}"
+          EOF
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
         with:
@@ -122,5 +133,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve
+        run: terraform apply -auto-approve -replace="digitalocean_droplet.ingest-dp[0]" -replace="digitalocean_droplet.ingest-dp[1]"
         working-directory: infra

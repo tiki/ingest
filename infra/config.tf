@@ -7,9 +7,7 @@ locals {
   region   = "nyc3"
 }
 
-variable "sem_ver" {
-  default = "0.0.1"
-}
+variable "sem_ver" {}
 
 variable "doppler_st" {}
 
