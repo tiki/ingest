@@ -1,5 +1,5 @@
 name: Deploy
- 
+
 on:
   push:
     branches:
@@ -16,6 +16,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2.1.1
 
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          java-version: '11'
+          distribution: 'zulu'
+
+      - name: Maven Package
+        run: mvn clean package -Dmaven.test.skip
+
       - name: Docker meta
         id: meta
         uses: docker/metadata-action@v3
@@ -31,7 +40,7 @@ jobs:
         with:
           token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      - name: Save DigitalOcean kubeconfig
+      - name: Registry login
         run: doctl registry login --expiry-seconds 600
 
       - name: Build and push
