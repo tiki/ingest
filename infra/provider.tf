@@ -13,7 +13,7 @@ terraform {
     organization = "tiki"
 
     workspaces {
-      name = "ingest-test"
+      name = "ingest"
     }
   }
 }

@@ -99,7 +99,6 @@ jobs:
 
   deploy_to_infra:
     runs-on: ubuntu-latest
-    environment: Production
     needs: [build_test_push]
 
     steps:
