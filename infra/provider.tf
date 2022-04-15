@@ -19,7 +19,6 @@ terraform {
 }
 
 variable "do_pat" {}
-variable "do_ssh" {}
 
 provider "digitalocean" {
   token = var.do_pat
