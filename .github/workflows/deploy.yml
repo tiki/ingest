@@ -43,6 +43,9 @@ jobs:
           java-version: '11'
           distribution: 'zulu'
 
+      - name: Install CLI
+        uses: dopplerhq/cli-action@v1
+
       - name: Install PostgreSQL client
         run: |
           sudo apt-get update
@@ -61,7 +64,9 @@ jobs:
       - name: Maven Package Ingest
         run: |
           cd ingest
-          mvn clean package
+          doppler run -c prd -- mvn clean package
+        env:
+          DOPPLER_TOKEN: ${{ secrets.DOPPLER_ST }}
 
       - name: Docker meta
         id: meta
@@ -76,7 +81,7 @@ jobs:
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
         with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+          token: ${{ secrets.DO_PAT }}
 
       - name: Registry login
         run: doctl registry login --expiry-seconds 600
