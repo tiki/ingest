@@ -92,3 +92,4 @@ jobs:
           context: ingest/
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+          build-args: JAR_FILE=target/*.jar
