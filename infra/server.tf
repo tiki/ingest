@@ -2,7 +2,7 @@
 # MIT license. See LICENSE file in root directory.
 
 data "template_file" "userdata" {
-  template = file("cloud-config.yaml")
+  template = file("${path.module}/infra/cloud-config.yaml")
 
   vars = {
     do_pat     = var.do_pat
