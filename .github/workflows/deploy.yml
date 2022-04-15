@@ -55,13 +55,13 @@ jobs:
 
       - name: Maven Install Common
         run: |
-        cd common
-        mvn install
+          cd common
+          mvn install
 
       - name: Maven Package Ingest
         run: |
-        cd ingest
-        mvn clean package
+          cd ingest
+          mvn clean package
 
       - name: Docker meta
         id: meta
