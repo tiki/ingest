@@ -13,4 +13,4 @@ RUN apt-get update && apt-get install -y apt-transport-https ca-certificates cur
 
 EXPOSE 8464
 ENTRYPOINT ["doppler", "run", "-c", "prd", "--"]
-CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-Dspring.profiles.active=prod", "-jar", "/app.jar"]
