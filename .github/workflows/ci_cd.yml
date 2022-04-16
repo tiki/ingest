@@ -92,7 +92,6 @@ jobs:
         with:
           context: ingest/
           push: true
-          network: host
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             JAR_FILE=target/*.jar
