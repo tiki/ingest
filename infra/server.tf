@@ -42,10 +42,11 @@ resource "digitalocean_droplet" "ingest-dp" {
       - echo 'interface=docker0' >> /etc/dnsmasq.conf
       - echo 'bind-interfaces' >> /etc/dnsmasq.conf
       - echo 'listen-address=172.17.0.1' >> /etc/dnsmasq.conf
+      - mkdir -p /etc/resolvconf/resolv.conf.d/
       - echo 'nameserver 172.17.0.1' >> /etc/resolvconf/resolv.conf.d/tail
-      - sudo resolvconf -u
-      - sudo service dnsmasq restart
-      - sudo service docker restart
+      - resolvconf -u
+      - service dnsmasq restart
+      - service docker restart
       - doctl registry login --expiry-seconds 600 --access-token ${var.do_pat}
       - docker pull registry.digitalocean.com/tiki/ingest:${var.sem_ver}
       - docker run -d -p ${local.port}:${local.port} -e DOPPLER_TOKEN="${var.doppler_st}" --restart=always registry.digitalocean.com/tiki/ingest:${var.sem_ver}
