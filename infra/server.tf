@@ -1,17 +1,6 @@
 # Copyright (c) TIKI Inc.
 # MIT license. See LICENSE file in root directory.
 
-data "template_file" "userdata" {
-  template = file("${path.module}/infra/cloud-config.yaml")
-
-  vars = {
-    do_pat     = var.do_pat
-    doppler_st = var.doppler_st
-    sem_ver    = var.sem_ver
-    port       = local.port
-  }
-}
-
 resource "digitalocean_droplet" "ingest-dp" {
   count      = 2
   image      = "ubuntu-20-04-x64"
@@ -20,7 +9,38 @@ resource "digitalocean_droplet" "ingest-dp" {
   size       = "s-1vcpu-1gb"
   vpc_uuid   = local.vpc_uuid
   monitoring = true
-  user_data = data.template_file.userdata.rendered
+  user_data = <<-EOT
+    #cloud-config
+    repo_update: true
+    repo_upgrade: all
+
+    packages:
+      - docker.io
+
+    groups:
+      - docker
+
+    users:
+      - name: ubuntu
+        groups: docker
+        home: /home/ubuntu
+        shell: /bin/bash
+        sudo: ALL=(ALL) NOPASSWD:ALL
+
+    system_info:
+      default_user:
+        groups: [docker]
+
+    snap:
+      commands:
+        00: [ 'install', 'doctl' ]
+        01: [ 'connect', 'doctl:dot-docker' ]
+
+    runcmd:
+      - doctl registry login --expiry-seconds 600 --access-token ${var.do_pat}
+      - docker pull registry.digitalocean.com/tiki/ingest:${var.sem_ver}
+      - docker run -d -p ${local.port}:${local.port} -e DOPPLER_TOKEN="${var.doppler_st}" registry.digitalocean.com/tiki/ingest:${var.sem_ver}
+  EOT
 }
 
 resource "digitalocean_firewall" "ingest-fw" {
