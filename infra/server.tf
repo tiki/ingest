@@ -24,7 +24,6 @@ resource "digitalocean_droplet" "ingest-dp" {
 
     users:
     - name: ubuntu
-      lock_passwd: true
       shell: /bin/bash
       groups:
         - ubuntu
