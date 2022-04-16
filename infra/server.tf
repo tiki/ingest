@@ -11,27 +11,34 @@ resource "digitalocean_droplet" "ingest-dp" {
   monitoring = true
   user_data = <<-EOT
     #cloud-config
-    repo_update: true
-    repo_upgrade: all
 
-    packages:
-      - docker.io
-      - dnsmasq
-      - resolvconf
+    package_update: true
+    package_upgrade: true
+    package_reboot_if_required: true
 
-    groups:
-      - docker
+    manage-resolv-conf: true
+    resolv_conf:
+      nameservers:
+        - '8.8.8.8'
+        - '8.8.4.4'
 
     users:
-      - name: ubuntu
-        groups: docker
-        home: /home/ubuntu
-        shell: /bin/bash
-        sudo: ALL=(ALL) NOPASSWD:ALL
+    - name: ubuntu
+      lock_passwd: true
+      shell: /bin/bash
+      groups:
+        - ubuntu
+        - docker
+      sudo:
+        - ALL=(ALL) NOPASSWD:ALL
 
-    system_info:
-      default_user:
-        groups: [docker]
+    packages:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg-agent
+      - software-properties-common
+      - docker.io
 
     snap:
       commands:
@@ -39,18 +46,11 @@ resource "digitalocean_droplet" "ingest-dp" {
         01: [ 'connect', 'doctl:dot-docker' ]
 
     runcmd:
-      - echo 'interface=docker0' >> /etc/dnsmasq.conf
-      - echo 'bind-interfaces' >> /etc/dnsmasq.conf
-      - echo 'listen-address=172.17.0.1' >> /etc/dnsmasq.conf
-      - mkdir -p /etc/resolvconf/resolv.conf.d/
-      - echo 'nameserver 172.17.0.1' >> /etc/resolvconf/resolv.conf.d/tail
-      - resolvconf -u
-      - service dnsmasq restart
-      - service docker restart
       - doctl registry login --expiry-seconds 600 --access-token ${var.do_pat}
       - docker pull registry.digitalocean.com/tiki/ingest:${var.sem_ver}
       - docker run -d -p ${local.port}:${local.port} -e DOPPLER_TOKEN="${var.doppler_st}" --restart=always registry.digitalocean.com/tiki/ingest:${var.sem_ver}
-      - echo init complete
+
+    final_message: 'The server is up, after $UPTIME seconds'
   EOT
 }
 
