@@ -1,6 +1,10 @@
 # Copyright (c) TIKI Inc.
 # MIT license. See LICENSE file in root directory.
 
+data "digitalocean_ssh_key" "terraform" {
+  name = "terraform"
+}
+
 resource "digitalocean_droplet" "ingest-dp" {
   count      = 2
   image      = "ubuntu-20-04-x64"
@@ -9,6 +13,7 @@ resource "digitalocean_droplet" "ingest-dp" {
   size       = "s-1vcpu-1gb"
   vpc_uuid   = local.vpc_uuid
   monitoring = true
+  ssh_keys = [ data.digitalocean_ssh_key.terraform.id ]
   user_data = <<-EOT
     #cloud-config
 
@@ -22,14 +27,12 @@ resource "digitalocean_droplet" "ingest-dp" {
         - '8.8.8.8'
         - '8.8.4.4'
 
-    users:
-    - name: ubuntu
-      shell: /bin/bash
-      groups:
-        - ubuntu
-        - docker
-      sudo:
-        - ALL=(ALL) NOPASSWD:ALL
+    groups:
+      - docker
+
+    system_info:
+      default_user:
+        groups: [docker]
 
     packages:
       - apt-transport-https

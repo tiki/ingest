@@ -8,7 +8,6 @@ locals {
 }
 
 variable "sem_ver" {}
-
 variable "doppler_st" {}
 
 resource "digitalocean_project" "ingest" {
