@@ -13,13 +13,12 @@ terraform {
     organization = "tiki"
 
     workspaces {
-      name = "ingest-test"
+      name = "ingest"
     }
   }
 }
 
 variable "do_pat" {}
-variable "do_ssh" {}
 
 provider "digitalocean" {
   token = var.do_pat

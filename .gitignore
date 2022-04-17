@@ -30,7 +30,7 @@ hs_err_pid*
 /target/
 
 # Property files
-application-*.properties
+application-local*.properties
 !application-*.template.properties
 
 # Fuckin Macs

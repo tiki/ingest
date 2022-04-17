@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
         classes = {IngestApp.class}
 )
-@ActiveProfiles(profiles = {"local", "test"})
+@ActiveProfiles(profiles = {"test", "local"})
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class BreakerTests {
