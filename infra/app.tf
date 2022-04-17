@@ -36,24 +36,24 @@ resource "digitalocean_app" "ingest-app" {
       }
 
       alert {
-        rule = "CPU_UTILIZATION"
-        value = 70
-        operator = GREATER_THAN
-        window = THIRTY_MINUTES
+        rule     = "CPU_UTILIZATION"
+        value    = 70
+        operator = "GREATER_THAN"
+        window   = "THIRTY_MINUTES"
       }
 
       alert {
-        rule = "MEM_UTILIZATION"
-        value = 80
-        operator = GREATER_THAN
-        window = TEN_MINUTES
+        rule     = "MEM_UTILIZATION"
+        value    = 80
+        operator = "GREATER_THAN"
+        window   = "TEN_MINUTES"
       }
 
       alert {
-        rule = "RESTART_COUNT"
-        value = 3
-        operator = GREATER_THAN
-        window = TEN_MINUTES
+        rule     = "RESTART_COUNT"
+        value    = 3
+        operator = "GREATER_THAN"
+        window   = "TEN_MINUTES"
       }
     }
 
