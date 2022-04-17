@@ -20,13 +20,8 @@ resource "digitalocean_database_firewall" "db-cluster-ingest-fw" {
   cluster_id = digitalocean_database_cluster.db-cluster-ingest.id
 
   rule {
-    type  = "droplet"
-    value = digitalocean_droplet.ingest-dp[0].id
-  }
-
-  rule {
-    type  = "droplet"
-    value = digitalocean_droplet.ingest-dp[1].id
+    type  = "app"
+    value = digitalocean_app.ingest-app.id
   }
 }
 

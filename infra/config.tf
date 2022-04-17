@@ -7,18 +7,15 @@ locals {
   region   = "nyc3"
 }
 
-variable "sem_ver" {}
-variable "doppler_st" {}
-
-resource "digitalocean_project" "ingest" {
-  name        = "ingest"
-  description = "https://github.com/tiki/ingest"
+resource "digitalocean_project" "production" {
+  name        = "production"
+  description = "https://github.com/tiki"
   purpose     = "Service or API"
   environment = "Production"
   resources = [
-    digitalocean_droplet.ingest-dp[0].urn,
-    digitalocean_droplet.ingest-dp[1].urn,
-    digitalocean_loadbalancer.ingest-lb.urn,
     digitalocean_database_cluster.db-cluster-ingest.urn
   ]
 }
+
+variable "sem_ver" {}
+variable "doppler_st" {}
