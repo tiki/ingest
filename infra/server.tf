@@ -18,13 +18,6 @@ resource "digitalocean_droplet" "ingest-dp" {
     #cloud-config
 
     rancher:
-      console: centos
-      network:
-        dns:
-          search:
-            - 8.8.8.8
-            - 8.8.4.4
-
     write_files:
       - path: /etc/rc.local
         permissions: '0755'
