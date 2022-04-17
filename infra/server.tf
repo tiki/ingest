@@ -7,52 +7,38 @@ data "digitalocean_ssh_key" "terraform" {
 
 resource "digitalocean_droplet" "ingest-dp" {
   count      = 2
-  image      = "ubuntu-20-04-x64"
+  image      = "rancheros"
   name       = "ingest-dp-${local.region}"
   region     = local.region
   size       = "s-1vcpu-1gb"
   vpc_uuid   = local.vpc_uuid
   monitoring = true
   ssh_keys = [ data.digitalocean_ssh_key.terraform.id ]
+
   user_data = <<-EOT
     #cloud-config
 
-    package_update: true
-    package_upgrade: true
-    package_reboot_if_required: true
+    rancher:
+      console: centos
+      network:
+        dns:
+          search:
+            - 8.8.8.8
+            - 8.8.4.4
 
-    manage-resolv-conf: true
-    resolv_conf:
-      nameservers:
-        - '8.8.8.8'
-        - '8.8.4.4'
-
-    groups:
-      - docker
-
-    system_info:
-      default_user:
-        groups: [docker]
-
-    packages:
-      - apt-transport-https
-      - ca-certificates
-      - curl
-      - gnupg-agent
-      - software-properties-common
-      - docker.io
-
-    snap:
-      commands:
-        00: [ 'install', 'doctl' ]
-        01: [ 'connect', 'doctl:dot-docker' ]
-
-    runcmd:
-      - doctl registry login --expiry-seconds 600 --access-token ${var.do_pat}
-      - docker pull registry.digitalocean.com/tiki/ingest:${var.sem_ver}
-      - docker run -d -p ${local.port}:${local.port} -e DOPPLER_TOKEN="${var.doppler_st}" --restart=always registry.digitalocean.com/tiki/ingest:${var.sem_ver}
-
-    final_message: 'The server is up, after $UPTIME seconds'
+    write_files:
+      - path: /etc/rc.local
+        permissions: '0755'
+        owner: root
+        content: |
+          #!/bin/bash
+          wait-for-docker
+          cd ~ && wget https://github.com/digitalocean/doctl/releases/download/v1.72.0/doctl-1.72.0-linux-amd64.tar.gz
+          tar xf ~/doctl-1.72.0-linux-amd64.tar.gz
+          sudo mv ~/doctl /usr/local/bin
+          doctl registry login --expiry-seconds 600 --access-token dop_v1_995f8c702e57dcf81466f9eb46f0c8a7c64a1609a6e23bfcb800dc1c42ebf0a5
+          docker pull registry.digitalocean.com/tiki/ingest:0.0.2
+          docker run -d -p 8464:8464 -e DOPPLER_TOKEN="dp.st.prd.wwegoHuCQ0AU2MJaGyhH8Xz3lFqSs9GAkP19q2Ki6u7" --restart=always registry.digitalocean.com/tiki/ingest:0.0.2
   EOT
 }
 
