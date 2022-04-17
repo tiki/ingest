@@ -12,7 +12,6 @@ resource "digitalocean_droplet" "ingest-dp" {
   region     = local.region
   size       = "s-1vcpu-1gb"
   vpc_uuid   = local.vpc_uuid
-  monitoring = true
   ssh_keys = [ data.digitalocean_ssh_key.terraform.id ]
 
   user_data = <<-EOT
