@@ -12,9 +12,8 @@ data "digitalocean_project" "production" {
 }
 
 resource "digitalocean_project_resources" "production" {
-  project = data.digitalocean_project.production.id
-  resources = concat(data.digitalocean_project.production.resources,
-  [digitalocean_database_cluster.db-cluster-ingest.urn])
+  project   = data.digitalocean_project.production.id
+  resources = [digitalocean_database_cluster.db-cluster-ingest.urn]
 }
 
 
