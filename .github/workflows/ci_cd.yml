@@ -133,5 +133,5 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve -replace="digitalocean_droplet.ingest-dp[0]" -replace="digitalocean_droplet.ingest-dp[1]"
+        run: terraform apply -auto-approve
         working-directory: infra

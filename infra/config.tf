@@ -7,15 +7,16 @@ locals {
   region   = "nyc3"
 }
 
-resource "digitalocean_project" "production" {
-  name        = "production"
-  description = "https://github.com/tiki"
-  purpose     = "Service or API"
-  environment = "Production"
-  resources = [
-    digitalocean_database_cluster.db-cluster-ingest.urn
-  ]
+data "digitalocean_project" "production" {
+  name = "production"
 }
+
+resource "digitalocean_project_resources" "production" {
+  project = data.digitalocean_project.production.id
+  resources = concat(data.digitalocean_project.production.resources,
+  [digitalocean_database_cluster.db-cluster-ingest.urn])
+}
+
 
 variable "sem_ver" {}
 variable "doppler_st" {}
