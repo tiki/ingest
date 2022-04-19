@@ -40,7 +40,7 @@ public class BreakerService {
     }
 
     @Transactional
-    public BreakerAORsp write(BreakerAOReq req){
+    public List<BreakerAORsp> write(List<BreakerAOReq> req){
         byte[] edgeHash;
         try{
             edgeHash = edgeHash(req.vertex1, req.vertex2);
