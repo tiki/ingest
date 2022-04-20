@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface QuarantineRepository extends JpaRepository<QuarantineDO, Long> {
     List<QuarantineDO> findByBreakerId(Long id);
+    List<QuarantineDO> findByBreakerIdIn(List<Long> id);
     List<QuarantineDO> deleteByBreakerId(Long id);
+    List<QuarantineDO> deleteByBreakerIdIn(List<Long> id);
 }
