@@ -7,6 +7,8 @@ import com.mytiki.common.reply.ApiReplyAOFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping(value = BreakerController.PATH_CONTROLLER)
 public class BreakerController {
@@ -19,12 +21,7 @@ public class BreakerController {
     }
 
     @RequestMapping(method = RequestMethod.POST)
-    public ApiReplyAO<BreakerAORsp> post(@RequestBody BreakerAOReq body){
-        BreakerAORsp rsp = breakerService.write(body);
-        ApiReplyAOBuilder<BreakerAORsp> builder = new ApiReplyAOBuilder<>();
-        if(rsp.getRetryIn() == null)
-            return builder.httpStatus(HttpStatus.CREATED).build();
-        else
-            return builder.httpStatus(HttpStatus.ACCEPTED).data(rsp).build();
+    public ApiReplyAO<List<BreakerAORsp>> post(@RequestBody List<BreakerAOReq> body){
+        return ApiReplyAOFactory.ok(breakerService.write(body));
     }
 }
