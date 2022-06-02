@@ -1,6 +1,7 @@
 package com.mytiki.ingest.features.latest.cache;
 
 import com.mytiki.ingest.features.latest.breaker.BreakerAOReq;
+import com.mytiki.ingest.features.latest.breaker.BreakerDO;
 import com.mytiki.ingest.features.latest.edge.EdgeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +30,18 @@ public class CacheService {
         this.edgeService = edgeService;
     }
 
-    public void add(BreakerAOReq req){
-        CacheDO cacheDO = new CacheDO();
-        cacheDO.setFingerprint(req.getFingerprint());
-        cacheDO.setVertex1Type(req.getVertex1().getType());
-        cacheDO.setVertex1Value(req.getVertex1().getValue());
-        cacheDO.setVertex2Type(req.getVertex2().getType());
-        cacheDO.setVertex2Value(req.getVertex2().getValue());
-        cacheDO.setCreated(ZonedDateTime.now());
-        repository.save(cacheDO);
-        long count = repository.count();
-        if(count > THRESHOLD) execute();
+    public void add(List<BreakerAOReq> reqList){
+        List<CacheDO> cacheDOList = reqList.stream().map(req -> {
+            CacheDO cacheDO = new CacheDO();
+            cacheDO.setFingerprint(req.getFingerprint());
+            cacheDO.setVertex1Type(req.getVertex1().getType());
+            cacheDO.setVertex1Value(req.getVertex1().getValue());
+            cacheDO.setVertex2Type(req.getVertex2().getType());
+            cacheDO.setVertex2Value(req.getVertex2().getValue());
+            cacheDO.setCreated(ZonedDateTime.now());
+            return cacheDO;
+        }).collect(Collectors.toList());
+        repository.saveAll(cacheDOList);
     }
 
     @Scheduled(fixedDelay = 1000*60*5) //5 Minutes
