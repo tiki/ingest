@@ -12,7 +12,7 @@
 
     <groupId>com.mytiki</groupId>
     <artifactId>ingest</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <packaging>jar</packaging>
 
     <name>ingest</name>
